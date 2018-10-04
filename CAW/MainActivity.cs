@@ -13,8 +13,7 @@ namespace CAW
     public class MainActivity : AppCompatActivity
     {
         ImageView ivClickableImage;
-        TextVieew tvClickCounter;
-
+        TextView tvClickCounter;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -34,9 +33,14 @@ namespace CAW
 
         private void OnImageClick(object sender, EventArgs e)
         {
-            var prefs = GetPreferences(Android.Content.FileCreationMode.Private);
-            var edit = prefs.Edit();
-            edit.
+            using (var prefs = GetPreferences(Android.Content.FileCreationMode.Private))
+            using (var edit = prefs.Edit())
+            {
+                edit.PutInt("clicks", prefs.GetInt("clicks", 0)+1);
+                edit.Commit();
+                tvClickCounter.Text = $"Clicks: {prefs.GetInt("clicks", 0)}";
+            }
+            Toast.MakeText(this, "Too-too-loo~!", ToastLength.Short).Show();
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
